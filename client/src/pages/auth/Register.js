@@ -1,12 +1,29 @@
 import React, {useState} from 'react';
+import {auth} from '../../firebase'
+import {toast} from 'react-toastify'
+
 
 const Register = () => {
     //create state to store user's email
     const [email, setEmail] = useState("");
     //handle form submit to firebase
-    const handleSubmit = ()=>{
+    const handleSubmit = async (event)=>{
+        event.preventDefault()
+    //    when user submits form, we send them the url where they can complete the registration
+        const config = {
+            //hard coded for now
+            url: process.env.REACT_APP_REGISTER_REDIRECT_URL,
+            handleCodeInApp: true,
+        }
+        await auth.sendSignInLinkToEmail(email, config)
+        //notify user that registration email has been sent
+        toast.success(`Email is sent to ${email}. Click the link to complete your registration.`);
+        //save users email in local storage
+        window.localStorage.setItem('emailForRegistration', email);
+        //clear state
+        setEmail("");
 
-    }
+    };
     const registerForm = ()=> (
         <form onSubmit={handleSubmit}>
             {/*bind the value in the state email. When user is typing in the input field,
