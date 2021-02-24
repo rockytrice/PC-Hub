@@ -11,7 +11,7 @@ const Register = () => {
         event.preventDefault()
     //    when user submits form, we send them the url where they can complete the registration
         const config = {
-            //hard coded for now
+            //url for redirect on register
             url: process.env.REACT_APP_REGISTER_REDIRECT_URL,
             handleCodeInApp: true,
         }
@@ -32,7 +32,7 @@ const Register = () => {
             <input type="email" className="form-control" value={email}
                    autoFocus
                    onChange={event => setEmail(event.target.value)}/>
-                   <button type="submit" className="btn btn-raised">Register</button>
+                   <button type="submit" className="btn mt-4 btn-raised">Register</button>
         </form>
     );
         return (
