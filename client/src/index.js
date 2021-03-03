@@ -15,6 +15,7 @@ const store = createStore(rootReducer, composeWithDevTools());
 
 ReactDOM.render(
   //<React.StrictMode>
+    //pass redux store to be accessible to entire app
     <Provider store={store} >
         <BrowserRouter>
             <App />
