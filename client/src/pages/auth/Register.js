@@ -1,6 +1,8 @@
 import React, {useState} from 'react';
 import {auth} from '../../firebase'
 import {toast} from 'react-toastify'
+import {Button} from 'antd';
+import { UserAddOutlined } from '@ant-design/icons';
 
 
 const Register = () => {
@@ -29,10 +31,20 @@ const Register = () => {
             {/*bind the value in the state email. When user is typing in the input field,
             grab value and put it in the state by the name of the email variable. Then on change we get the event handler.
             So whenever the user types something in we set the email to the target value */}
-            <input type="email" className="form-control" value={email}
-                   autoFocus
-                   onChange={event => setEmail(event.target.value)}/>
-                   <button type="submit" className="btn mt-4 btn-raised">Register</button>
+            <div className="form-group">
+                <input type="email" className="form-control" value={email}
+                       placeholder="Enter the email address"
+                       autoFocus
+                       onChange={event => setEmail(event.target.value)}/>
+            </div>
+                   <Button
+                       type="primary"
+                       block
+                       shape="round"
+                       icon={<UserAddOutlined />}
+                       size="large"
+                   >Register
+                   </Button>
         </form>
     );
         return (
