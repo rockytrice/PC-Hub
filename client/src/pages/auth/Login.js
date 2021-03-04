@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import {auth, googleAuthProvider} from '../../firebase';
 import {toast} from 'react-toastify';
 import {useDispatch} from 'react-redux';
+import {Link} from 'react-router-dom'
 
 import {Button} from 'antd';
 import { MailOutlined , LoadingOutlined, GoogleOutlined } from '@ant-design/icons';
@@ -93,7 +94,9 @@ const Login = ({history}) => {
                    className="mb-3">
                    Login with Google
                </Button>
+               <Link to="/forgot/password" className="float-right text-danger">Forgot Password</Link>
            </div>
+
 
         </form>
     );
