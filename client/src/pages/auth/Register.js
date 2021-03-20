@@ -1,11 +1,19 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {auth} from '../../firebase'
 import {toast} from 'react-toastify'
 import {Button} from 'antd';
 import { UserAddOutlined } from '@ant-design/icons';
+import { useSelector} from 'react-redux';
 
-
-const Register = () => {
+const Register = ({history}) => {
+    //destructure user from state using useSelector.. returns the state using spread operator to grab the user out of it.
+    const {user} = useSelector((state) =>({...state}));
+//this runs when the component mounts.. so if user and user token is already in the state, push to the home page
+    useEffect(()=>{
+        if(user && user.token){
+            history.push("/")
+        }
+    },[user])
     //create state to store user's email
     const [email, setEmail] = useState("");
     //handle form submit to firebase

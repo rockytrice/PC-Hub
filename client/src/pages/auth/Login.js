@@ -1,7 +1,7 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {auth, googleAuthProvider} from '../../firebase';
 import {toast} from 'react-toastify';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {Link} from 'react-router-dom'
 
 import {Button} from 'antd';
@@ -12,6 +12,16 @@ const Login = ({history}) => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [loading, setLoading] = useState(false);
+
+    //destructure user from state using useSelector.. returns the state using spread operator to grab the user out of it.
+    const {user} = useSelector((state) =>({...state}));
+//this runs when the component mounts.. so if user and user token is already in the state, push to the home page
+    useEffect(()=>{
+        if(user && user.token){
+            history.push("/")
+        }
+    },[user])
+
     let dispatch = useDispatch();
     //handle form submit to firebase
     const handleSubmit = async (event)=>{

@@ -8,7 +8,14 @@ import { MailOutlined , LoadingOutlined,  } from '@ant-design/icons';
 const ForgotPassword = ({history})=>{
     const [email, setEmail] = useState("")
     const [loading,setLoading] = useState(false);
-
+//destructure user from state using useSelector.. returns the state using spread operator to grab the user out of it.
+const {user} = useSelector((state) =>({...state}));
+//this runs when the component mounts.. so if user and user token is already in the state, push to the home page
+useEffect(()=>{
+    if(user && user.token){
+        history.push("/")
+    }
+},[user])
 const handleSubmit = async (e)=>{
     e.preventDefault();
 setLoading(true)
