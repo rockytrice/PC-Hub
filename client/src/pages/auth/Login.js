@@ -3,10 +3,19 @@ import {auth, googleAuthProvider} from '../../firebase';
 import {toast} from 'react-toastify';
 import {useDispatch, useSelector} from 'react-redux';
 import {Link} from 'react-router-dom'
+import axios from "axios";
 
 import {Button} from 'antd';
 import { MailOutlined , LoadingOutlined, GoogleOutlined } from '@ant-design/icons';
+//making request to backend with auth token
+const createUpdateUser = async (authtoken)=> {
+    return axios.post(`${process.env.REACT_APP_API}/create-update-user`,{},{
+        headers: {
+            authtoken: authtoken,
 
+        },
+    })
+}
 const Login = ({history}) => {
     //create state to store user's email
     const [email, setEmail] = useState("");
@@ -24,7 +33,7 @@ const Login = ({history}) => {
 
     let dispatch = useDispatch();
     //handle form submit to firebase
-    const handleSubmit = async (event)=>{
+    const handleSubmit = async (event,err)=>{
         event.preventDefault()
         setLoading(true);
         try{
@@ -32,14 +41,20 @@ const Login = ({history}) => {
         // console.log(result);
             const {user} = result
             const idTokenResult = await user.getIdTokenResult();
-            dispatch({
-                type: 'LOGGED_IN_USER',
-                payload: {
-                    email: user.email,
-                    token: idTokenResult.token,
-                },
-            });
-            history.push('/')
+            //gives us the user token
+            createUpdateUser(idTokenResult.token)
+                .then(
+                    res=> console.log("create or update res", res)
+                )
+            .catch(err)
+            // dispatch({
+            //     type: 'LOGGED_IN_USER',
+            //     payload: {
+            //         email: user.email,
+            //         token: idTokenResult.token,
+            //     },
+            // });
+            // history.push('/')
 
         }catch (error){
             console.log(error)
