@@ -3,9 +3,10 @@ const mongoose = require('mongoose');
 const morgan = require('morgan');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-require('dotenv').config()
+const {readdirSync} = require('fs');
+require('dotenv').config();
+
 //import Routes
-const authRoutes = require('./routes/auth')
 
 //app
 const app = express();
@@ -26,7 +27,10 @@ app.use(bodyParser.json({limit:"2mb"}));
 app.use(cors());
 
 //routes middleware
-app.use("/api",authRoutes);
+//using read dir sync so we don't have to import every route from the routes directory
+readdirSync('./routes').map((r)=>
+    app.use("/api",require("./routes/" + r))
+);
 
 
 

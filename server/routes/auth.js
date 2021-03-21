@@ -1,13 +1,10 @@
 const express = require("express");
 const router = express.Router();
-
+//import
+//make sure to destructure
+const {createUpdateUser} = require("../controllers/auth")
 //route
-router.get('/create-update-user', (req, res)=>{
-    res.json({
-        data: "hey you hit the create or update user api endpoint "
-    })
-});
-
+router.get('/create-update-user', createUpdateUser);
 
 
 module.exports=router;
