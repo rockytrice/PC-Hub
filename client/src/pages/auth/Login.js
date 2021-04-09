@@ -3,19 +3,13 @@ import {auth, googleAuthProvider} from '../../firebase';
 import {toast} from 'react-toastify';
 import {useDispatch, useSelector} from 'react-redux';
 import {Link} from 'react-router-dom'
-import axios from "axios";
+import {createUpdateUser} from "../../functions/auth";
 
 import {Button} from 'antd';
 import { MailOutlined , LoadingOutlined, GoogleOutlined } from '@ant-design/icons';
-//making request to backend with auth token
-const createUpdateUser = async (authtoken)=> {
-    return axios.post(`${process.env.REACT_APP_API}/create-update-user`,{},{
-        headers: {
-            authtoken: authtoken,
 
-        },
-    })
-}
+
+
 const Login = ({history}) => {
     //create state to store user's email
     const [email, setEmail] = useState("");
@@ -31,6 +25,13 @@ const Login = ({history}) => {
         }
     },[user])
 
+    const roleBasedRedirect = (res)=>{
+        if(res.data.role === "admin"){
+            history.push("admin/dashboard");
+        }else{
+            history.push("/user/history")
+        }
+    }
     let dispatch = useDispatch();
     //handle form submit to firebase
     const handleSubmit = async (event,err)=>{
@@ -43,17 +44,23 @@ const Login = ({history}) => {
             const idTokenResult = await user.getIdTokenResult();
             //gives us the user token
             createUpdateUser(idTokenResult.token)
-                .then(
-                    res=> console.log("create or update res", res)
+                .then((res)=> {
+                    dispatch({
+                            type: 'LOGGED_IN_USER',
+                            payload: {
+                                name: res.data.name,
+                                email: res.data.email,
+                                token: idTokenResult.token,
+                                role: res.data.role,
+                                id: res.data.id
+                            },
+                        });
+                    roleBasedRedirect(res);
+
+                    }
                 )
             .catch(err)
-            // dispatch({
-            //     type: 'LOGGED_IN_USER',
-            //     payload: {
-            //         email: user.email,
-            //         token: idTokenResult.token,
-            //     },
-            // });
+
             // history.push('/')
 
         }catch (error){
@@ -67,14 +74,24 @@ const Login = ({history}) => {
         .then(async (result)=>{
             const {user} = result
             const idTokenResult = await user.getIdTokenResult();
-            dispatch({
-                type: 'LOGGED_IN_USER',
-                payload: {
-                    email: user.email,
-                    token: idTokenResult.token,
-                },
-            });
-            history.push('/')
+            createUpdateUser(idTokenResult.token)
+                .then((res)=> {
+                        dispatch({
+                            type: 'LOGGED_IN_USER',
+                            payload: {
+                                name: res.data.name,
+                                email: res.data.email,
+                                token: idTokenResult.token,
+                                role: res.data.role,
+                                id: res.data.id
+                            },
+                        });
+                    roleBasedRedirect(res);
+                    }
+                )
+                .catch();
+            //history.push('/')
+
         })
         .catch((error)=>{
             console.log(error)

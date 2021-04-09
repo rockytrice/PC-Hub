@@ -1,12 +1,20 @@
 import React, {useState,useEffect} from 'react';
+import {useDispatch, useSelector} from 'react-redux';
 import {auth} from '../../firebase'
 import {toast} from 'react-toastify'
+import {Button} from 'antd';
+import { UserAddOutlined } from '@ant-design/icons';
+import {createUpdateUser} from "../../functions/auth";
 
 //destructor of history props
 const RegisterComplete = ({history})  => {
     //create state to store user's email
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+
+    //destructure user from state using useSelector.. returns the state using spread operator to grab the user out of it.
+    const {user} = useSelector((state) =>({...state}));
+    let dispatch = useDispatch();
 //this component mounts for the first time when the page loads. the first argument is the used state.
 // and the second argument is the dependencies to control the behavior
     //when the component mounts the user's email will be available in the email state
@@ -15,10 +23,12 @@ const RegisterComplete = ({history})  => {
         setEmail(window.localStorage.getItem('emailForRegistration'))
         // console.log(window.location.href);
         // console.log(window.localStorage.getItem('emailForRegistration'));
-    },[history])
+    },[])
     //handle form submit to firebase
     // access props.history
    // history.push('/das')
+
+
     const handleSubmit = async (event)=>{
         event.preventDefault()
         //validation
@@ -49,7 +59,22 @@ if (result.user.emailVerified){
     console.log("user",user, 'idTokenResult',idTokenResult)
       //dispatch to the store the currently logged in users info(email address, json web token, etc)
 
-
+    //gives us the user token
+    createUpdateUser(idTokenResult.token)
+        .then((res)=> {
+                dispatch({
+                    type: 'LOGGED_IN_USER',
+                    payload: {
+                        name: res.data.name,
+                        email: res.data.email,
+                        token: idTokenResult.token,
+                        role: res.data.role,
+                        id: res.data.id
+                    },
+                });
+            }
+        )
+        .catch(err=> console.log(err));
     //redirect
     history.push('/')
 }
@@ -69,7 +94,17 @@ if (result.user.emailVerified){
             <input type="password"  className="form-control mt-3" value={password} onChange={(e)=> setPassword(e.target.value)}
                  placeholder="Password" autoFocus
             />
-            <button type="submit" className="btn mt-4 btn-raised"> Complete Registration</button>
+            <div className="mt-3">
+                <Button onClick={handleSubmit}
+                        type="primary"
+                        block
+                        shape="round"
+                        icon={<UserAddOutlined />}
+                        size="large"
+                >Complete Registration
+                </Button>
+            </div>
+
         </form>
     );
     return (

@@ -45,7 +45,7 @@ const Register = ({history}) => {
                        autoFocus
                        onChange={event => setEmail(event.target.value)}/>
             </div>
-                   <Button
+                   <Button onClick={handleSubmit}
                        type="primary"
                        block
                        shape="round"

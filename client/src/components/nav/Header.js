@@ -47,7 +47,7 @@ const logout = () =>{
                 </Item>
             )}
             {user && (
-                <SubMenu icon={<SettingOutlined />}  title={user.email && user.email.split('@')[0]} className="float-right">
+                <SubMenu icon={<SettingOutlined />}  title={user.email && user.name} className="float-right">
                     <Item key="setting:1">Option 1</Item>
                     <Item key="setting:2">Option 2</Item>
                     <Item icon={<LogoutOutlined />}  onClick={logout}>Logout</Item>
